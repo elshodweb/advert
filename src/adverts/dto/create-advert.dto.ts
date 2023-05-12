@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumberString, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumberString, IsString, IsUrl } from 'class-validator';
 
 export class CreateAdvertDto {
   @ApiProperty({
@@ -17,7 +17,7 @@ export class CreateAdvertDto {
   @ApiProperty({
     example: 'http://localhost:7796/api-docs',
   })
-  @IsString()
+  @IsUrl()
   @IsNotEmpty()
   url: string;
 }

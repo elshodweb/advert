@@ -8,11 +8,13 @@ import { CreateAdvertDto } from './dto/create-advert.dto';
 import { UpdateAdvertDto } from './dto/update-advert.dto';
 import { Knex } from 'knex';
 import { NotFoundError } from 'rxjs';
+import { isUUID } from 'class-validator';
 
 @Injectable()
 export class AdvertsService {
   constructor(@Inject('KnexConnection') private knex: Knex) {}
 
+  //post
   async create(createAdvertDto: CreateAdvertDto, file: Express.Multer.File) {
     const { sell, buy, url } = createAdvertDto;
     console.log(file);
@@ -33,6 +35,7 @@ export class AdvertsService {
     return { message: 'created', newAdvert };
   }
 
+  // get all
   async findAll() {
     const adverts = await this.knex('adverts')
       .select('*')
@@ -40,7 +43,11 @@ export class AdvertsService {
     return adverts;
   }
 
+  //get one
   async findOne(id: string) {
+    if (!isUUID(id)) {
+      throw new BadRequestException('Invalid ID');
+    }
     const advert = await this.knex('adverts')
       .select('*')
       .where({ advert_id: id })
@@ -52,7 +59,11 @@ export class AdvertsService {
     return advert;
   }
 
+  // update
   async update(id: string, updateAdvertDto: UpdateAdvertDto) {
+    if (!isUUID(id)) {
+      throw new BadRequestException('Invalid ID');
+    }
     const advert = await this.knex('adverts')
       .select('*')
       .where({ advert_id: id })
@@ -72,10 +83,14 @@ export class AdvertsService {
       .update(newDate)
       .where({ advert_id: id })
       .returning('*');
-    return { message: 'updated todo ', todo: data };
+    return { message: 'updated advert ', advert: data };
   }
 
+  //delete
   async remove(id: string) {
+    if (!isUUID(id)) {
+      throw new BadRequestException('Invalid this ID');
+    }
     const advert = await this.knex('adverts')
       .select('*')
       .where({ advert_id: id })
@@ -89,6 +104,6 @@ export class AdvertsService {
       .where({ advert_id: id })
       .returning('*');
 
-    return { message: 'deleted todo', todo: data };
+    return { message: 'deleted advert', advert: data };
   }
 }
