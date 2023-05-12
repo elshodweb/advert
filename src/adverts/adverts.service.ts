@@ -55,11 +55,6 @@ export class AdvertsService {
     if (!advert) {
       throw new NotFoundException('not found advert for this id');
     }
-    await this.knex('history').insert({
-      history_buy: advert.advert_buy,
-      history_sell: advert.advert_sell,
-      advert_id: advert.advert_id,
-    });
     return advert;
   }
 
