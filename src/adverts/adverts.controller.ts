@@ -42,10 +42,16 @@ export class AdvertsController {
     return this.advertsService.findAll();
   }
 
+  @Get('stats')
+  statsAll() {
+    return this.advertsService.statsAll();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.advertsService.findOne(id);
   }
+
   @UseInterceptors(FileInterceptor('picture', {}))
   @Put(':id')
   update(@Param('id') id: string, @Body() updateAdvertDto: UpdateAdvertDto) {

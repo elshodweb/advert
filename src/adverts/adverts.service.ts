@@ -7,7 +7,6 @@ import {
 import { CreateAdvertDto } from './dto/create-advert.dto';
 import { UpdateAdvertDto } from './dto/update-advert.dto';
 import { Knex } from 'knex';
-import { NotFoundError } from 'rxjs';
 import { isUUID } from 'class-validator';
 
 @Injectable()
@@ -56,6 +55,11 @@ export class AdvertsService {
     if (!advert) {
       throw new NotFoundException('not found advert for this id');
     }
+    await this.knex('history').insert({
+      history_buy: advert.advert_buy,
+      history_sell: advert.advert_sell,
+      advert_id: advert.advert_id,
+    });
     return advert;
   }
 
@@ -105,5 +109,10 @@ export class AdvertsService {
       .returning('*');
 
     return { message: 'deleted advert', advert: data };
+  }
+
+  async statsAll() {
+    const data = await this.knex('history');
+    return data;
   }
 }
